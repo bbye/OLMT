@@ -1646,6 +1646,10 @@ for s in infile:
        outfile.write(stemp)
     elif ('PFLOTRAN' in s and (not options.clmpf_mode)):
        stemp = ''  # removal of any PFLOTRAN required libraries/includes
+    elif (('CXX_LINKER' in s and 'FORTRAN' in s) \
+          and options.pio_version=='2'):
+       stemp = s.replace('FORTRAN', 'CXX')
+       outfile.write(stemp)
     else:
        outfile.write(s)
 infile.close()
@@ -1662,6 +1666,10 @@ if (options.mymodel == 'ELM' and os.path.isfile("./Macros.cmake")):
        outfile.write(stemp)
     elif ('PFLOTRAN' in s and (not options.clmpf_mode)):
        stemp = ''  # removal of any PFLOTRAN required libraries/includes
+    elif (('CXX_LINKER' in s and 'FORTRAN' in s) \
+          and options.pio_version=='2'):
+       stemp = s.replace('FORTRAN', 'CXX')
+       outfile.write(stemp)
     else:
        outfile.write(s)
   infile.close()
