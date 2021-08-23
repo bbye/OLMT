@@ -265,7 +265,7 @@ elif (options.machine == 'cades' or options.machine == 'metis'):
     ccsm_input = '/lustre/or-hydra/cades-ccsi/proj-shared/project_acme/ACME_inputdata/'
 elif (options.machine == 'edison' or 'cori' in options.machine):
     ccsm_input = '/project/projectdirs/acme/inputdata'
-elif ('anvil' in options.machine):
+elif ('anvil' in options.machine or 'bebop' in options.machine):
     ccsm_input = '/home/ccsm-data/inputdata'
 elif ('compy' in options.machine):
     ccsm_input = '/compyfs/inputdata'
@@ -294,7 +294,7 @@ if (options.mpilib == ''):
         options.mpilib = 'mpt'  
     elif ('cades' in options.machine):
         options.mpilib = 'openmpi'
-    elif ('anvil' in options.machine):
+    elif ('anvil' in options.machine or 'bebop' in options.machine):
         options.mpilib = 'mvapich'
     elif ('compy' in options.machine):
         options.mpilib = 'impi'
@@ -366,6 +366,8 @@ if (options.runroot == ''):
         runroot=os.environ.get('CSCRATCH')+'/e3sm_scratch/'+options.machine+'/'
     elif ('anvil' in options.machine):
         runroot="/lcrc/group/acme/"+myuser
+    elif ('bebop' in options.machine):
+        runroot='/lcrc/project/Vegetation_Dynamics_in_ELM/'+myuser
     elif ('compy' in options.machine):
         runroot='/compyfs/'+myuser+'/e3sm_scratch'
     else:
@@ -736,7 +738,7 @@ if (options.mc_ensemble <= 0):
 
 
     mysubmit_type = 'qsub'
-    if ('cades' in options.machine or 'anvil' in options.machine or 'compy' in options.machine or 'cori' in options.machine):
+    if ('cades' in options.machine or 'anvil' in options.machine or 'bebop' in options.machine or 'compy' in options.machine or 'cori' in options.machine):
         mysubmit_type = 'sbatch'
     #Create a .PBS site fullrun script to launch the full job 
 
@@ -770,8 +772,11 @@ if (options.mc_ensemble <= 0):
                       output.write('#SBATCH -A '+myproject+'\n')
                     output.write('#SBATCH --time='+timestr+'\n')
                     if ('anvil' in options.machine):
-                      output.write('#SBATCH --partition=acme-centos6\n')
+                      output.write('#SBATCH --partition=acme-small\n')
                       output.write('#SBATCH --account=condo\n')
+                    if ('bebop' in options.machine):
+                      output.write('#SBATCH --partition=bdwall\n')
+                      output.write('#SBATCH --account=Vegetation_Dynamics_in_ELM\n')
                     if ('cori' in options.machine or 'edison' in options.machine):
                          if (options.debug):
                              output.write('#SBATCH --partition=debug\n')

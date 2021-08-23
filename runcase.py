@@ -387,6 +387,8 @@ elif ('edison' in options.machine):
     ppn=24
 elif ('anvil' in options.machine):
     ppn=36
+elif ('bebop' in options.machine):
+    ppn=36
 elif ('compy' in options.machine):
     ppn=40
 if (options.ensemble_file == ''):
@@ -817,7 +819,7 @@ else:
               +tmpdir+'/clm_params.nc')
     myncap = 'ncap'
     if ('chrysalis' in options.machine or 'compy' in options.machine or 'ubuntu' in options.machine \
-          or 'mymac' in options.machine or 'anvil' in options.machine):
+          or 'mymac' in options.machine or 'anvil' in options.machine or 'bebop' in options.machine):
       myncap='ncap2'
 
     flnr = nffun.getvar(tmpdir+'/clm_params.nc','flnr')
@@ -959,6 +961,7 @@ elif (options.exit_spinup):
     options.run_n = 1
 
 #create new case
+print options.machine
 cmd = './create_newcase --case '+casedir+' --mach '+options.machine+' --compset '+ \
 	   options.compset+' --res '+options.res+' --mpilib '+ \
            options.mpilib+' --walltime '+str(options.walltime)+ \
@@ -973,6 +976,7 @@ cmd = cmd+' > create_newcase.log'
 print(cmd)
 result = os.system(cmd)
 
+print cmd
 if (os.path.isdir(casedir)):
     print(casename+' created.  See create_newcase.log for details')
     #os.system('mv create_newcase.log '+casename)
@@ -1868,6 +1872,12 @@ if ((options.ensemble_file != '' or int(options.mc_ensemble) != -1) and (options
             output_run.write('#SBATCH --time='+timestr+'\n')
             output_run.write('#SBATCH -J ens_'+casename+'\n')
             output_run.write('#SBATCH --nodes='+str(int(math.ceil(np_total/(ppn*1.0))))+'\n')
+            if ('anvil' in options.machine):
+                output_run.write('#SBATCH -A condo\n')
+                output_run.write('#SBATCH -q acme-small\n')
+            if ('bebop' in options.machine):
+                output_run.write('#SBATCH -A Vegetation_Dynamics_in_ELM\n')
+                output_run.write('#SBATCH -q bdwall\n')
             if ('edison' in options.machine or 'cori' in options.machine):
               if (options.debug):
                 output_run.write('#SBATCH --qos=debug\n')
@@ -1945,7 +1955,7 @@ if ((options.ensemble_file != '' or int(options.mc_ensemble) != -1) and (options
                +'--case '+casename+' --runroot '+runroot+' --n_ensemble '+str(nsamples)+' --ens_file '+ \
                options.ensemble_file+' --exeroot '+exeroot+' --parm_list '+options.parm_list+' --cnp '+cnp + \
                ' --site '+options.site+' --model_name '+model_name
-        elif ('anvil' in options.machine or 'cori' in options.machine):
+        elif ('anvil' in options.machine or 'bebop' in options.machine or 'cori' in options.machine):
             cmd = 'srun -n '+str(np_total)+' python manage_ensemble.py ' \
                +'--case '+casename+' --runroot '+runroot+' --n_ensemble '+str(nsamples)+' --ens_file '+ \
                options.ensemble_file+' --exeroot '+exeroot+' --parm_list '+options.parm_list+' --cnp '+cnp + \
