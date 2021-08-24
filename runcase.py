@@ -961,7 +961,7 @@ elif (options.exit_spinup):
     options.run_n = 1
 
 #create new case
-print options.machine
+print (options.machine)
 cmd = './create_newcase --case '+casedir+' --mach '+options.machine+' --compset '+ \
 	   options.compset+' --res '+options.res+' --mpilib '+ \
            options.mpilib+' --walltime '+str(options.walltime)+ \
@@ -976,7 +976,7 @@ cmd = cmd+' > create_newcase.log'
 print(cmd)
 result = os.system(cmd)
 
-print cmd
+print (cmd)
 if (os.path.isdir(casedir)):
     print(casename+' created.  See create_newcase.log for details')
     #os.system('mv create_newcase.log '+casename)
