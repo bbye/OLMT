@@ -221,7 +221,7 @@ class Frame(wx.Frame):
         self.fire.SetValue(True)
         box2.Add(self.fire,0,wx.EXPAND)
         self.dynroot = wx.CheckBox(panel, -1,'Use dynamic rooting')
-        self.dynroot.SetValue(False)
+        self.dynroot.SetValue(True)
         box2.Add(self.dynroot,0,wx.EXPAND)
         self.cpl_bypass = wx.CheckBox(panel, -1,'No datm (coupler bypass)')
         self.cpl_bypass.SetValue(True)
@@ -703,8 +703,8 @@ class Frame(wx.Frame):
             cmd=cmd+' --coldstart'
         if (myfire == False):
             cmd = cmd+' --nofire'
-        if (mydynroot == False):
-            cmd = cmd+' --no_dynroot'
+        if (mydynroot == True):
+            cmd = cmd+' --dynroot'
         if (myconly == True and myindex == 3):
             cmd = cmd+' --c_only'
         if (myeca == True and myindex ==3):

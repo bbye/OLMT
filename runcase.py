@@ -241,8 +241,8 @@ parser.add_option("--nopftdyn", action="store_true", dest="nopftdyn", \
 parser.add_option("--harvmod", action="store_true", dest="harvmod", \
                       default=False, help = "Turn on harvest modificaton" \
                       "All harvest is performed in first timestep")
-parser.add_option("--no_dynroot", dest="no_dynroot", default=False, \
-                  help = 'Turn off dynamic root distribution', action="store_true")
+parser.add_option("--dynroot", dest="dynroot", default=False, \
+                  help = 'Turn on dynamic root distribution', action="store_true")
 parser.add_option("--vertsoilc", dest="vsoilc", default=False, \
                   help = 'To turn on CN with multiple soil layers, excluding CENTURY C module (CLM4ME on as well)', action="store_true")
 parser.add_option("--centbgc", dest="centbgc", default=False, \
@@ -1410,8 +1410,8 @@ for i in range(1,int(options.ninst)+1):
             output.write(" use_vertsoilc = .true.\n")
         if (options.centbgc or 'ECA' in options.fates_nutrient):
             output.write(" use_century_decomp = .true.\n")
-        if (options.no_dynroot):
-            output.write(" use_dynroot = .false.\n")
+        if (options.dynroot):
+            output.write(" use_dynroot = .true.\n")
         if ('CROP' in compset):
             output.write(" suplphos = 'ALL'\n")
         if (options.fates_nutrient != ''):

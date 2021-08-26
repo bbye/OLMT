@@ -172,8 +172,8 @@ parser.add_option("--aero_rcp85",dest="aerorcp85", action="store_true", default=
 parser.add_option("--ndep_rcp85",dest="ndeprcp85", action="store_true", default=False,help="Use RCP8.5 N dep")
 parser.add_option("--harvmod", action="store_true", dest='harvmod', default=False, \
                   help="turn on harvest modification:  All harvest at first timestep")
-parser.add_option("--no_dynroot", dest="no_dynroot", default=False, action="store_true", \
-                  help = 'Turn off dynamic root distribution')
+parser.add_option("--dynroot", dest="dynroot", default=False, action="store_true", \
+                  help = 'Turn on dynamic root distribution')
 parser.add_option("--vertsoilc", dest="vsoilc", default=False, action="store_true", \
                   help = 'To turn on CN with multiple soil layers, excluding CENTURY C module (CLM4ME on as well)')
 parser.add_option("--centbgc", dest="centbgc", default=False, action="store_true", \
@@ -566,8 +566,8 @@ for row in AFdatareader:
             basecmd = basecmd+' --lai '+str(options.lai)
         if (options.nopftdyn):
             basecmd = basecmd+' --nopftdyn'
-        if (options.no_dynroot):
-            basecmd = basecmd+' --no_dynroot'
+        if (options.dynroot):
+            basecmd = basecmd+' --dynroot'
         if (options.vsoilc):
             basecmd = basecmd+' --vertsoilc'
         if (options.centbgc):

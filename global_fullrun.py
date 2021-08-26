@@ -129,8 +129,8 @@ parser.add_option("--SP", dest="sp", default=False, \
                  action="store_true", help="Use satellite phenology")
 parser.add_option("--harvmod", action="store_true", dest='harvmod', default=False, \
                     help="turn on harvest modification:  All harvest at first timestep")
-parser.add_option("--no_dynroot", dest="no_dynroot", default=False, \
-                  help = 'Turn off dynamic root distribution', action="store_true")
+parser.add_option("--dynroot", dest="dynroot", default=False, \
+                  help = 'Turn on dynamic root distribution', action="store_true")
 parser.add_option("--vertsoilc", dest="vsoilc", default=False, \
                   help = 'To turn on CN with multiple soil layers, excluding CENTURY C module (CLM4ME on as well)', action="store_true")
 parser.add_option("--ECA", action="store_true", dest="eca", default=False, \
@@ -498,8 +498,8 @@ if (int(options.mypft) >= 0):
     basecmd = basecmd+' --pft '+str(options.mypft)
 if (options.nopftdyn):
     basecmd = basecmd+' --nopftdyn'
-if (options.no_dynroot):
-    basecmd = basecmd+' --no_dynroot'
+if (options.dynroot):
+    basecmd = basecmd+' --dynroot'
 if (options.vsoilc):
     basecmd = basecmd+' --vertsoilc'
 if (options.centbgc):
