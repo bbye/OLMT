@@ -32,6 +32,8 @@ parser.add_option("--model_root", dest="csmdir", default='', \
                   help = "base model directory")
 parser.add_option("--ccsm_input", dest="ccsm_input", default='', \
                   help = "input data directory for CESM (required)")
+parser.add_option("--ccsm_input_clmforce", dest="ccsm_input_clmforce", default='', \
+                  help = "input data directory for atm forcing only (required)")
 parser.add_option('--project', dest='project',default='', \
                  help='Set project')
 parser.add_option("--exeroot", dest="exeroot", default="", \
@@ -432,6 +434,14 @@ if (options.ccsm_input == '' or (os.path.exists(options.ccsm_input) \
     sys.exit(1)
 else:
     options.ccsm_input = os.path.abspath(options.ccsm_input)
+
+#check for valid input data directory
+if (options.ccsm_input_clmforce == '' or (os.path.exists(options.ccsm_input_clmforce) \
+                                 == False)):
+    print('Error:  invalid forcing input data directory')
+    sys.exit(1)
+else:
+    options.ccsm_input_clmforce = os.path.abspath(options.ccsm_input_clmforce)
 
 #----------------------------------------------------------------------------------
 # check for a specific forcing data, GSWP3-Daymet4, to offline ELM
@@ -1015,7 +1025,10 @@ os.system('./xmlchange RUNDIR='+rundir)
 os.system('./xmlchange DOUT_S=TRUE')
 os.system('./xmlchange DOUT_S_ROOT='+runroot+'/archive/'+casename)
 os.system('./xmlchange DIN_LOC_ROOT='+options.ccsm_input)
-os.system('./xmlchange DIN_LOC_ROOT_CLMFORC='+options.ccsm_input+'/atm/datm7/')    
+if (options.ccsm_input_clmforce != ''):
+    os.system('./xmlchange DIN_LOC_ROOT_CLMFORC='+options.ccsm_input_clmforce)    
+else:
+    os.system('./xmlchange DIN_LOC_ROOT_CLMFORC='+options.ccsm_input+'/atm/datm7/')
 
 #define mask and resoultion
 if (isglobal == False):

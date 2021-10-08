@@ -93,6 +93,8 @@ parser.add_option("--sitegroup", dest="sitegroup",default="AmeriFlux", \
                   help = "site group to use (default AmeriFlux)")
 parser.add_option("--ccsm_input", dest="ccsm_input", default='', \
                   help = "input data directory for CESM (required)")
+parser.add_option("--ccsm_input_clmforce", dest="ccsm_input_clmforce", default='', \
+                  help = "input data directory for atm forcing only (required)")
 # metdata 
 parser.add_option("--nopointdata", dest="nopointdata", default=False, action="store_true", \
                   help="Do NOT make point data (use data already created)")
@@ -106,6 +108,10 @@ parser.add_option("--cruncep", dest="cruncep", default=False, action="store_true
                   help = 'Use CRU-NCEP meteorology')
 parser.add_option("--cruncepv8", dest="cruncepv8", default=False, action="store_true", \
                   help = 'Use CRU-NCEP meteorology')
+parser.add_option("--crujra", dest="crujra", default=False, action="store_true", \
+                  help = 'use crujra data')
+parser.add_option("--cplhist", dest="cplhist", default=False, action="store_true", \
+                  help= 'use CPLHIST forcing')
 parser.add_option("--gswp3", dest="gswp3", default=False, action="store_true", \
                   help = 'Use GSWP3 meteorology')
 parser.add_option("--princeton", dest="princeton", default=False, action="store_true", \
@@ -338,6 +344,11 @@ elif ('anvil' in options.machine or 'chrysalis' in options.machine or 'bebop' in
     ccsm_input = '/home/ccsm-data/inputdata'
 elif ('compy' in options.machine):
     ccsm_input = '/compyfs/inputdata/'
+if (options.ccsm_input_clmforce != ''):
+    ccsm_input_clmforce = options.ccsm_input_clmforce
+else:
+    ccsm_input_clmforce = ccsm_input+'/atm/datm7/'
+    print(ccsm_input_clmforce)
 
 #if (options.compiler != ''):
 #    if (options.machine == 'titan'):
@@ -457,15 +468,19 @@ for row in AFdatareader:
             firstsite=site
         site_lat  = row[4]
         site_lon  = row[3]
-        if (options.cruncepv8 or options.cruncep or options.gswp3 or options.princeton):
+        if (options.cruncepv8 or options.cruncep or options.gswp3 or options.princeton or options.crujra):
           startyear = 1901
           endyear = 1920
+          if (options.cruncep):
+            endyear_trans = 2013
           if (options.cruncepv8):
             endyear_trans=2016
           elif (options.gswp3):
             endyear_trans=2014
           elif (options.princeton):
             endyear_trans=2012
+          elif (options.crujra):
+            endyear_trans=2017
           else:
             endyear_trans=2010
         else:
@@ -492,7 +507,7 @@ for row in AFdatareader:
             if (options.eco2_file != ''):
                 translen = translen - ncycle     # if experiment sim, stop first transient at exp start yr - 1
             if (options.cpl_bypass and (options.cruncep or options.gswp3 or \
-                options.princeton or options.cruncepv8)):
+                options.princeton or options.cruncepv8 or options.crujra)):
                 print(endyear_trans, site_endyear)
                 translen = min(site_endyear,endyear_trans)-1850+1
 
@@ -514,7 +529,8 @@ for row in AFdatareader:
 
         #print year_align, fsplen
         basecmd = 'python runcase.py --site '+site+' --ccsm_input '+ \
-            os.path.abspath(ccsm_input)+' --rmold --no_submit --sitegroup ' + \
+            os.path.abspath(ccsm_input)+' --ccsm_input_clmforce '+ \
+            os.path.abspath(ccsm_input_clmforce)+' --rmold --no_submit --sitegroup ' + \
             options.sitegroup
         if (options.machine != ''):
             basecmd = basecmd+' --machine '+options.machine
@@ -582,6 +598,8 @@ for row in AFdatareader:
             basecmd = basecmd+' --cruncep'
         if (options.cruncepv8):
             basecmd = basecmd+' --cruncepv8'
+        if (options.crujra):
+            basecmd = basecmd+' --crujra'
         if (options.gswp3):
             basecmd = basecmd+' --gswp3'
         if (options.princeton):
@@ -591,6 +609,8 @@ for row in AFdatareader:
         if (options.daymet4): # gswp3 v2 spatially-downscaled by daymet v4, usually together with user-defined domain and surface data
             basecmd = basecmd+' --daymet4'
             if (not options.gswp3): basecmd = basecmd+' --gswp3'
+        if (options.cplhist):
+            basecmd = basecmd+' --cplhist'
         if (options.fates_paramfile != ''):
             basecmd = basecmd+ ' --fates_paramfile '+options.fates_paramfile
         if (options.fates_nutrient != ''):
