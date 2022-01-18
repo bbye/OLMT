@@ -1857,7 +1857,7 @@ if ((options.ensemble_file != '' or int(options.mc_ensemble) != -1) and (options
     #Launch ensemble if requested 
     mysubmit_type = 'qsub'
     if ('cades' in options.machine or 'compy' in options.machine or 'ubuntu' in options.machine or 'cori' in options.machine or \
-        options.machine == 'anvil' or options.machine == 'edison'):
+        options.machine == 'anvil' or options.machine == 'edison' or options.machine == 'bebop'):
         mysubmit_type = 'sbatch'
     if (options.ensemble_file != ''):
         os.system('mkdir -p '+PTCLMdir+'/scripts/'+myscriptsdir)
@@ -1939,7 +1939,7 @@ if ((options.ensemble_file != '' or int(options.mc_ensemble) != -1) and (options
             output_run.write('module load cray-netcdf\n')
             output_run.write('module load python/2.7-anaconda-5.2\n')
             output_run.write('module load nco\n')
-        if ('compy' in options.machine or 'anvil' in options.machine):
+        if ('compy' in options.machine or 'anvil' in options.machine or 'bebop' in options.machine):
             #get the software environment
             softenvfile = open(casedir+'/software_environment.txt','r')
             for line in softenvfile:
